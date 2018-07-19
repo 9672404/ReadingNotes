@@ -10,7 +10,11 @@
 
 ### 第2章  Java内存区域与内存溢出异常
 
-![虚拟机运行时数据区](https://mango777.oss-cn-beijing.aliyuncs.com/%E3%80%8A%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E3%80%8B/%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png)
+![虚拟机运行时数据区](https://readingnotes.oss-cn-beijing.aliyuncs.com/%E3%80%8A%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E3%80%8B/%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png)
+
+
+
+
 
 1. 运行时数据区
 
