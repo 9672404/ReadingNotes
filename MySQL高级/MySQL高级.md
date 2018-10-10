@@ -99,7 +99,7 @@ SQL解析，从From开始，查出n个表的笛卡尔积（3 X 4 X 5),再按照�
    ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/INNER_JOIN.png)
 
 ```sql
-select <select_list> from TableA a inner jion Table b on a.key = b.key;
+select <select_list> from TableA a inner join Table b on a.key = b.key;
 ```
 
 2. left jion（左连接）
@@ -117,7 +117,7 @@ select <select_list> from TableA a left join TableB b on a.key = b.key;
    ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/RIGHT_JOIN.png)
 
 ```sql
-select <select_list> from tableA a right jion tableB b on a.key = b.key;
+select <select_list> from tableA a right join tableB b on a.key = b.key;
 ```
 
 4. LEFT JOIN EXCLUDING INNER JOIN （左连接排除内连接结果）
