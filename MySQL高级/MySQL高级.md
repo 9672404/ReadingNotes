@@ -156,7 +156,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 ### 5.3 索引简介
 
-####5.3.3 索引是什么？
+#### 5.3.3 索引是什么？
 
 > MySQL官方对索引的定义：索引（Index）是帮助MySQL高效获取数据的数据结构。本质 索引是数据结构。
 >
@@ -174,5 +174,8 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 为了加快Col2的查找，可以维护一个右边所示的二叉查找树（B树索引），每个节点分别包含索引键值和一个指向对应数据记录物理地址的指针，这样就可以运用二叉查找在一定的复杂度内获取到相应的数据，从而快速检索出符合条件的记录。
 
+ 
 
+索引失效会引起查询慢。--> 重建索引
 
+为什么查询快增删慢？   在更新记录的时候还要更新索引所以慢。
