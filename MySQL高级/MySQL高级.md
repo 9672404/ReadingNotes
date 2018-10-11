@@ -71,7 +71,7 @@ show variables like '%storage_engine%';
 select * from a(4记录),b(5记录);--笛卡尔积为20条记录
 ```
 
-#### 5.2.1 SQL执行顺序
+#### 5.2.1 SQLj加载执行顺序
 
 * 手写：
 
@@ -90,7 +90,7 @@ MySQL机读是从From开始
 
 SQL解析，从From开始，查出n个表的笛卡尔积（3 X 4 X 5),再按照各个条件筛选，最后选出用户需要查询的字段，排序返回。
 
-#### 5.2.2 Join图
+#### 5.2.2 7种 Join的SQL
 
 1. inner join （内连接）
 
@@ -153,4 +153,26 @@ select <select_list> from tableA a full outer join TableB b on a.key = b.key;
 ```sql
 select <select_list> from tableA a full outer join tableB b on a.key = b.key where a.key is null or b.key is null;
 ```
+
+### 5.3 索引简介
+
+####5.3.3 索引是什么？
+
+> MySQL官方对索引的定义：索引（Index）是帮助MySQL高效获取数据的数据结构。本质 索引是数据结构。
+>
+> 索引的目的是提高查询效率，可以类比字典。
+
+**索引会影响 where 后面的 查找 和 order by 后面的排序**
+
+**可以理解为：排好序的快速查询数据结构。**
+
+* 详解（重要）：在数据本身之外，**数据库系统还维护这满足特定查找算法的数据结构**，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法。这种数据结构就是索引。
+
+  ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/2018-10-11_154155.jpg)
+
+左边是表数据，一共两列七条记录，最左边是数据记录的物理地址。
+
+为了加快Col2的查找，可以维护一个右边所示的二叉查找树（B树索引），每个节点分别包含索引键值和一个指向对应数据记录物理地址的指针，这样就可以运用二叉查找在一定的复杂度内获取到相应的数据，从而快速检索出符合条件的记录。
+
+
 
