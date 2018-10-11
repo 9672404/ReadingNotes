@@ -156,7 +156,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 ### 5.3 索引简介
 
-#### 5.3.3 索引是什么？
+#### 5.3.1 索引是什么？
 
 > MySQL官方对索引的定义：索引（Index）是帮助MySQL高效获取数据的数据结构。本质 索引是数据结构。
 >
@@ -179,3 +179,66 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 索引失效会引起查询慢。--> 重建索引
 
 为什么查询快增删慢？   在更新记录的时候还要更新索引所以慢。
+
+* 一般来说索引本身也很大，不可能全部储存在内存中，因此索引往往是以索引文件的形式储存在磁盘上。
+
+* **我们平常所说的索引，如果没有特别指明，都是指B树（多路搜索树，不一定是二叉树）结构组织的索引。**其中聚集索引、次要索引、覆盖索引、复合索引、前缀索引、唯一默认索都是使用B+树索引，统称索引。当然除了B+树这种类型的索引之外，还有哈希索引（hash Index）等。
+
+
+#### 5.3.2 优势
+
+* 提高数据检索的效率，降低数据库的IO成本。
+* 降低数据排序的成本，降低了CPU的消耗。
+
+#### 5.3.3 劣势
+
+* 实际上索引也是一张表（.MYI文件），该表保存了主键与索引字段，并指向实体表的记录，所以索引列也是要占空间的。
+* 虽然索引大大提高了查询速度，同时会降低表的insert、update、delete 速度，更新表的时候，MySQL不仅要更新数据，还要更新一下索引文件，带来额外的资源消耗。
+
+#### 5.3.4 MySQ索引分类
+
+1. 单值索引
+
+   > 一个索引只包含单个列，一个表中可以有多个单列索引。一张表最多不要超过5个索引。
+
+2. 唯一索引
+
+   > 索引列的值必须唯一，但允许有空值。例如：银行卡号不能重复，建唯一索引。
+
+3. 复合索引
+
+   > 一个索引包含多个列
+
+4. 基本语法
+
+   创建：
+
+   ```sql
+   create [unique] index indexName on tableName(columname(length));
+   alert tableName add [unique] index [indexName] on (columnane(length));
+   ```
+
+   删除：
+
+   ```sql
+   drop index [indexName] on tableName;
+   ```
+
+   查看
+
+   ```sql
+   show index from tableName;
+   ```
+
+
+#### 5.3.5 MySQL索引结构
+
+1. BTree索引
+
+
+
+
+
+
+
+1. Hash索引、full-text索引、R-Tree索引    （了解）
