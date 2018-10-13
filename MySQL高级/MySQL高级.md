@@ -311,21 +311,29 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 2. 执行计划包含的信息:
 
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/2018-10-13_173446.jpg)
 
+##### 5.4.3.2 ID
 
+1. select 查询的序列号，包含一组数字，表示查询中执行select子句或操作表的顺序。
 
+2. 三种情况
 
+   1. **<font color="#dd0000">ID相同，执行顺序由上至下。</font>**
 
+      ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/ID%E7%9B%B8%E5%90%8C.jpg)
 
+   2. **<font color="#dd0000">ID不相同</font>**
 
+      ![ID不相同](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/ID%E4%B8%8D%E7%9B%B8%E5%90%8C.jpg)
 
+   3. **<font color="#dd0000">ID相同不同，同时存在。</font>**
 
+      ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/ID%E7%9B%B8%E5%90%8C%E5%8F%88%E4%B8%8D%E5%90%8C.jpg)
 
+##### 5.4.3.2 Select_Type
 
-
-
-
-
+1. 
 
 
 
