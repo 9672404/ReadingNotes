@@ -298,8 +298,8 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 ##### 5.4.3.2 能干什么？
 
-1. 表的读取顺序
-2. 数据读取操作的操作类型
+1. 表的读取顺序 (Id)
+2. 数据读取操作的操作类型（Select_Type）
 3. 哪些索引可以使用
 4. 哪些索引被实际使用
 5. 标准件的引用
@@ -341,38 +341,102 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 > 查询的类型，主要用于区别简单查询、联合查询、子查询等复杂查询。
 
+1. SIMPLE：简单的查询，查询中不包含子查询或者Union。
+
+2. PRIMARY：查询中如果包含任何复杂的子部分，则最外层被标记为。
+
+3. SUBQUERY：在select或Where列表中包含子查询。
+
+4. DERIVED：在From列表中包含的子查询被标记为DERIVED（衍生），MySQL会递归执行这些子查询，把结果放到临时表里。
+
+5.  UNION：若第二个SELECT出现在UNION之后，则被标记为UNION；
+
+   若UNION包含在FROM子句的子查询中，外层的SELECT将被标记为：DERIVED。
+
+6. UNION RESULT：从UNION表获取结果的SELECT。
+
+##### 5.4.3.3 Table
+
+就是哪张表的数据。
+
+##### 5.4.3.3 Type
+
+和SQL是否优化过，是否是最佳状态有关。
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Explain_Type.jpg)
+
+显示查询使用了何种类型：
+
+从最好到最差依次为：system > const > eq_ref > range > index > ALL
+
+百万以上的All需要优化，全表扫描。
+
+一般来说，得保证查询至少达到range级别，最好能达到ref。 
+
+1. **System：**表只有一行记录（等于系统表），这是const类型的特例，平时不会出现，可以忽略不计。
+
+2. **Const：**表示通过索引一次就找到，用于比较Primary Key或Unique索引。因为只匹配一行数据，所以很快。如将主键置于Where列表中，MySQL就能将该查询转换为一个常量。
+
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Type_Const.jpg)
+
+   > id 为主键 只通过一次查询就可以找到结果。
+   >
+   > select * from d1;单表且只有一条记录，所以为System。
+
+   ------
+
+3.  **Eq_Ref：**唯一性索引扫描，对于每个索引键，表中只有一条记录与之匹配。常见于主键或唯一索引扫描。
+
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Type_eq_ref.jpg)
+
+   > 使用了索引，但是恰巧只有一条记录，例如：员工表和部门表，员工表只有一条记录的 部门ID 与 部门表ID匹配，这种情况为  eq_ref.
+
+   ---
 
 
 
+4. **Ref：**非唯一索引扫描，返回匹配某个单独值得所有行。本质上也是一种索引访问，它返回所有匹配某个单独值的行，然而，它可能会找到多个符合条件的行，所以他应该属于查找和扫描的混合体。
 
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Type_ref.jpg)
 
+   > 查询 col1 为固定值得所有行。
 
+   ---
 
+    
 
+5.  **Range：**只检索给定范围的行，使用一个索引来选择行。Key列显示使用了哪个索引。一般就是在where语句中出现了between、<、>、in 、等的查询。这种范围扫描比全表扫描要好。
 
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Type_range.jpg)
 
+   > 按照开始时间 & 结束时间 查询记录 就是 range
 
+   ---
 
+    
 
+6. **Index：**Full Index scan 全索引扫描。只遍历索引树，通常比All快，索引文件比较小，并且 index是从索引读取的（索引文件会加载到内存中），All是从硬盘读取的，减少IO。
 
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Type_index.jpg)
 
+   > id 为 主键  唯一索引 ，如果只查ID 则为 全索引扫描。
 
+   ---
 
+    
 
+7. **All：**全表扫描
 
+#### 5.4.4 Key
 
+1. possible_kyes：可能使用到的索引，查询涉及到的字段上存在索引则列出，但实际查询不一定用到。
 
+2. key：实际使用的索引，如果为Null则没有使用索引。
 
+3. 若查询中使用了覆盖索引，则该索引只会出现在key中。
 
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Explain_key.jpg)
 
+   > 如果查询的字段的个数和顺序  和  创建的复合索引的字段的个数顺序一致，就会出现MySQL认为不使用索引，但是实际使用索引的情况。
 
-
-
-
-
-
-
-
-
-
-
+4. key_len：表示索引中使用的字节数，在不损失精度的情况下，字节数越少越好。显示的值为索引字段最大可能长度，并非实际使用长度。
