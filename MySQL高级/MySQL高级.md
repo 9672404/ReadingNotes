@@ -305,7 +305,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 5. 标准件的引用
 6. 每张表有多少行被优化器查询
 
-##### 5.4.3.2 怎么用？
+##### 5.4.3.3 怎么用？
 
 1. Explain + SQL
 
@@ -313,7 +313,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/2018-10-13_173446.jpg)
 
-##### 5.4.3.2 ID
+##### 5.4.3.4 ID
 
 > select 查询的序列号，包含一组数字，表示查询中执行select子句或操作表的顺序。
 
@@ -337,7 +337,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/ID%E7%9B%B8%E5%90%8C%E5%8F%88%E4%B8%8D%E5%90%8C.jpg)
 
-##### 5.4.3.2 Select_Type
+##### 5.4.3.5 Select_Type
 
 > 查询的类型，主要用于区别简单查询、联合查询、子查询等复杂查询。
 
@@ -355,11 +355,11 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 6. UNION RESULT：从UNION表获取结果的SELECT。
 
-##### 5.4.3.3 Table
+##### 5.4.3.6 Table
 
 就是哪张表的数据。
 
-##### 5.4.3.3 Type
+##### 5.4.3.7 Type
 
 和SQL是否优化过，是否是最佳状态有关。
 
@@ -427,7 +427,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 7. **All：**全表扫描
 
-#### 5.4.4 Key
+##### 5.4.3.8 Key
 
 1. possible_kyes：可能使用到的索引，查询涉及到的字段上存在索引则列出，但实际查询不一定用到。
 
@@ -440,3 +440,21 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
    > 如果查询的字段的个数和顺序  和  创建的复合索引的字段的个数顺序一致，就会出现MySQL认为不使用索引，但是实际使用索引的情况。
 
 4. key_len：表示索引中使用的字节数，在不损失精度的情况下，字节数越少越好。显示的值为索引字段最大可能长度，并非实际使用长度。
+
+##### 5.4.3.9 Ref
+
+显示索引的哪一行被使用了，如果可能的话，是一个常数。哪些列或常量被用于查找索引列上的值。
+
+##### 5.4.3.10 Rows
+
+根据表统计信息及索引选用情况，大致估算出找到所需的记录要读取的行数。
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Explain_Rows.jpg)
+
+##### 5.4.3.11 Extra
+
+包含不适合在其他列显示但十分重要的额外信息。
+
+1. **Using filesort：**说明MySQL会对数据使用一个外部的索引排序，而不是按照表内的索引顺序进行读取。MySQL中无法利用索引完成的排序操作称为“文件排序”。
+2. 
+
