@@ -333,7 +333,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 
 
-3. **<font color="#dd0000"ID相同不同，同时存在。</font>**
+3. **<font color="#dd0000">ID相同不同，同时存在。</font>**
 
 ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/ID%E7%9B%B8%E5%90%8C%E5%8F%88%E4%B8%8D%E5%90%8C.jpg)
 
@@ -496,23 +496,100 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
    > 如果索引了多列，要遵守最左前缀法则。指的是查询从索引的最左前列开始并且**不跳过索引中的列**。按照顺序来，不能不使用第一个或第二个 直接使用后面作为查询条件，否则索引会失效。
    >
-   > 带头大哥不能死，中间兄弟不能断。
+   > *带头大哥不能死，中间兄弟不能断。*
 
 3. **不在索引列上做任何操作（计算、函数、（自动or手动）类型转换），会导致索引失效而转向全表扫描**
 
-4. **存储引擎不能使用索引中范围条件右边的列**
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E7%B4%A2%E5%BC%95%E5%88%97%E4%B8%8A%E5%B0%91%E8%AE%A1%E7%AE%97.jpg)
+
+   > *索引列上少计算。*
+
+4. **存储引擎不能使用索引中范围条件右边的列**。
+
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E8%8C%83%E5%9B%B4%E4%B9%8B%E5%90%8E%E5%85%A8%E5%A4%B1%E6%95%88.jpg)
+
+   > *范围之后全失效*
 
 5. **尽量使用覆盖索引（只访问索引的查询（索引列和查询列一直），减少select * ）**
 
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95.jpg)
+
 6. **mysql 在使用不等于 （!= 或 <>）的时候无法使用索引会导致全表扫描**
+
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E4%B8%8D%E7%AD%89%E5%8F%B7%E4%BD%BF%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88.jpg)
 
 7. **is null ,is not null 也无法使用索引。**
 
 8. **like 以通配符开头（'%abc...'）mysql索引失效会变成全表扫描的操作。**
 
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%25%E5%8F%B7%E5%8A%A0%E5%9C%A8like%E5%8F%B3%E8%A1%A8.jpg)
+
+   > % 加在like 字符串的 右边，索引失效 ，两边和前边都失效。如果生产环境非得使用 "%aa%",使用覆盖索引解决。
+
 9. **字符串不加单引号索引失效。**
 
+   > varchar  必须使用 单引号。如果不加单引号会发生自动的类型转换，会造成索引失效（见3）
+   >
+   > *字符串里有引号*
+
 10. **少用or,用它来连接时会索引失效。**
+
+
+
+11. **总结**
+
+    ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%E6%80%BB%E7%BB%93.jpg)
+
+12. 面试题分析
+
+    group by 分组之前必排序，所以group by 和 order by 的排序规则一致。
+
+
+#### 5.5.3 优化总结口诀
+
+> 全值匹配我最爱，最左前缀要遵守；
+>
+> 带头大哥不能死，中间兄弟不能断；
+>
+> 索引列上少计算，范围之后全失效；
+>
+> LIKE百分写最右，覆盖索引不写星；
+>
+> 不等空值还有or，索引失效要少用；
+>
+> VAR引号不可丢，SQL高级也不难！
+
+
+
+### 5.6 查询截取分析
+
+#### 5.6.1 查询优化
+
+1. 解决慢查询的步骤
+
+   > * 慢查询的开启并捕获。
+   > * explain + 慢SQL 执行计划分析。
+   > * show profile 查询SQL在MySQL服务器里面的执行细节和生命周期情况。
+   > * SQL数据库服务器的参数调优。
+
+
+
+2. 永远小表驱动大表
+3. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
