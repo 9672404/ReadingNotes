@@ -317,7 +317,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 > select 查询的序列号，包含一组数字，表示查询中执行select子句或操作表的顺序。
 
-1. **<font color="#dd0000">ID相同，执行顺序由上至下。</font>**
+1.  **ID相同，执行顺序由上至下。**
 
 ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/ID%E7%9B%B8%E5%90%8C.jpg)
 
@@ -325,7 +325,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 
 
-2. **<font color="#dd0000">ID不相同</font>**
+2. **ID不相同。**
 
 ![ID不相同](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/ID%E4%B8%8D%E7%9B%B8%E5%90%8C.jpg)
 
@@ -333,7 +333,7 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 
 
-3. **<font color="#dd0000">ID相同不同，同时存在。</font>**
+3. **ID相同不同，同时存在。**
 
 ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/ID%E7%9B%B8%E5%90%8C%E5%8F%88%E4%B8%8D%E5%90%8C.jpg)
 
