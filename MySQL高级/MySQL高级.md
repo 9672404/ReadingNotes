@@ -565,31 +565,166 @@ select <select_list> from tableA a full outer join tableB b on a.key = b.key whe
 
 #### 5.6.1 查询优化
 
-1. 解决慢查询的步骤
+##### 5.6.1 解决慢查询的步骤
 
-   > * 慢查询的开启并捕获。
-   > * explain + 慢SQL 执行计划分析。
-   > * show profile 查询SQL在MySQL服务器里面的执行细节和生命周期情况。
-   > * SQL数据库服务器的参数调优。
-
-
-
-2. 永远小表驱动大表
-3. 
+> * 慢查询的开启并捕获。
+> * explain + 慢SQL 执行计划分析。
+> * show profile 查询SQL在MySQL服务器里面的执行细节和生命周期情况。
+> * SQL数据库服务器的参数调优。
 
 
 
+##### 5.6.2 永远小表驱动大表
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/in%E5%92%8Cexists%E5%8C%BA%E5%88%AB.jpg)
 
 
 
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/exists%E7%9F%A5%E8%AF%86%E7%82%B9.jpg)
 
 
 
+##### 5.6.3 Order By 关键字优化
+
+1. Order By子句尽量使用Index方式排序，避免使用FileSort方式排序。MySQL支持 Index 和  FileSort 排序，前者效率高，表示扫描索引本身完成排序。
+
+   Order By 满足两种情况会使用Index排序：（依旧符合最佳左前缀原则）
+
+   * Order By 语句使用索引最左前列。
+   * 使用Where 子句与Order By 子句条件列组合满足索引最左前列。
+
+2. 尽可能在索引列上完成排序操作，遵照索引建的最佳左前缀。
+
+3. 如果不在索引列上，fileSort有两种算法：
+
+   * 双路排序：MySQL4.1以前 使用， 扫两次磁盘。取一次数据需要发生两次扫面，I/O是很耗时的。
+
+   * 单路排序： 从磁盘上读取查询需要的所有列，按照Order By 在 sortBuffer 对它们进行排序，扫描排序后的列表进行输出，因为只发生了一次I/O在内存中排序，所以单路相对快一点
+
+     单路总体由于双路，但是单路有问题
+
+     ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E5%8D%95%E8%B7%AF%E6%8E%92%E5%BA%8F%E7%BC%BA%E7%82%B9.jpg)
+
+   * 增大sort_buffer_size 参数的设置
+   * 增大max_length_for_sort_data 参数的设置
+
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E6%8F%90%E9%AB%98Order%20By%20%E9%80%9F%E5%BA%A6.jpg)
+
+4. 总结
+
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/Order%20By%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5.jpg)
+
+##### 5.6.4 Group By 关键字优化
+
+* Group By 实质是先排序后进行分组，遵照索引建的最佳左前缀。
+* 当无法使用索引列，增大max_length_for_sort_data 参数的设置 + 增大sort_buffer_size 参数的设置。
+* where 高于having ，能写在where限定的条件就不要去having限定了。
+
+#### 5.6.2 慢查询日志
+
+打开慢查询日志，设置慢SQL阙值，捕获到慢SQL，使用exlpain, mysqldumpslow 分析慢SQL。
+
+#### 5.6.3 ShowProfile
+
+默认关闭，并保存最近15次的运行结果。
+
+##### 5.6.3.1 是否支持
+
+```sql
+show variables like 'profiling';
+```
+
+##### 5.6.3.2 开启
+
+```sql
+set profiloing=on;
+```
+
+##### 5.6.3.3 查看结果
+
+```sql
+show profiles;
+```
+
+##### 5.6.3.4 诊断SQL，查看SQL的生命周期
+
+```sql
+show profile cpu,block io for query 10;
+```
+
+##### 5.6.3.5 日常开发的结论
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/show%20profile%20%E5%BC%82%E5%B8%B8%E6%83%85%E5%86%B5.jpg)
 
 
 
+##6.MySQL锁机制
+
+### 6.1 表锁（偏读）
+
+> 偏向MyISAM存储引擎，开销小，加锁快；无死锁；锁定粒度大，发生锁冲突的概率最低，并发度最低。
 
 
 
+session1 给 table1 加了表锁的读锁，session1 可以读table1，不能跟新table1，不能读别的表。session2 可以读table1 阻塞，不能跟新table1。
 
+session1 给 table1加了表锁的写锁，session1可以读,写table1，不能读别的表；session2 读table1 阻塞。
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/MyISAM%E8%A1%A8%E9%94%81%E7%9A%84%E7%89%B9%E7%82%B9.jpg)
+
+**总而言之，就是读锁会阻塞写，但是不会阻塞读。而写锁则会把读和写都阻塞。**
+
+**Myisam的读写锁调度是写优先，这也是myisam不适合做写为主表的引擎。因为写锁后，其他线程不能做任何操作，大量的跟会使查询很难得到锁，从而造成永久的阻塞。**
+
+### 6.2 行锁（偏写）
+
+> 偏向InnoDB存储引擎，开销大，加锁慢；会出现死锁；锁定粒度最小，发生所冲突的概率最低，并发度也最高。
+>
+> InnoDB区别于 MyISAM最大的不同：1. 支持事物；2.采用了行锁。
+
+#### 6.2.1 事务的相关知识
+
+1. 事务（Transaction）及其ACID属性
+
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E4%BA%8B%E5%8A%A1%E7%9A%84ACID%E5%B1%9E%E6%80%A7.jpg)
+
+2. 并发事务处理带来的问题：更新丢失、脏读（已修改但未提交）、不可重复读、幻读。
+
+3. 事务的隔离级别。
+
+   ![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB.jpg)
+
+#### 6.2.2 无效索引行锁升级为表锁
+
+正常情况下，两个连接操作不同的行数据互不干扰，如果这个表中创建了索引，在查询的时候导致索引失效，比如查询时字符串没有加【’单引号‘】，就会是行锁变为表锁，别的连接在更新此表的别的数据也会发生阻塞。
+
+#### 6.2.3 间隙锁的危害
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E9%97%B4%E9%9A%99%E9%94%81%E7%9A%84%E5%8D%B1%E5%AE%B3.jpg)
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E9%97%B4%E9%9A%99%E9%94%81.jpg)
+
+#### 6.2.4 如何手动锁定一行
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/MySQL%E9%AB%98%E7%BA%A7/%E6%89%8B%E5%8A%A8%E9%94%81%E5%AE%9A%E4%B8%80%E8%A1%8C.jpg)
+
+#### 6.2.5 总结
+
+InnoDB实现了行锁，性能损耗会比表锁高一些，但是在高并发下处理能力远远高于myisam的表锁。
+
+InnoDB也有脆弱的一面，使用不当时行锁变表锁，会让InnoDB整体性能低甚至比表锁差。
+
+#### 6.2.6 如何分析行锁定
+
+```sql
+show status like 'innodb_row_lock%';
+```
+
+#### 6.2.7 行锁优化建议
+
+* 尽可能让所有数据检索都通过索引来完成，避免无索引行锁升级为表锁
+* 合理设计索引，尽量缩小锁的范围
+* 尽量减少检索条件，避免间隙锁
+* 尽量控制事务的大小，减小锁定资源量和时间长度
+* 尽可能低级别事务隔离
 
