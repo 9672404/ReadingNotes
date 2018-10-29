@@ -173,26 +173,241 @@ public class Singleton() {
 ②对象的多态性
 
 * 子类如果重写了父类的方法，通过子类对象调用的一定是子类重写过的代码
-
 * 非静态方法默认的调用对象是this
-
 * this对象在构造器或者说<init>方法中就是正在创建的对象
 
 
 
+## 4. 方法的参数传递机制
+
+```java
+public class Exam4 {
+	public static void main(String[] args) {
+		int i = 1;
+		String str = "hello";
+		Integer num = 200;
+		int[] arr = {1,2,3,4,5};
+		MyData my = new MyData();
+		
+		change(i,str,num,arr,my);
+		
+		System.out.println("i = " + i);
+		System.out.println("str = " + str);
+		System.out.println("num = " + num);
+		System.out.println("arr = " + Arrays.toString(arr));
+		System.out.println("my.a = " + my.a);
+	}
+	public static void change(int j, String s, Integer n, int[] a,MyData m){
+		j += 1;
+		s += "world";
+		n += 1;
+		a[0] += 1;
+		m.a += 1;
+	}
+}
+class MyData{
+	int a = 10;
+}
+```
 
 
 
+考点：
+
+1. 方法的参数传递机制。
+2. String、包装类等对象的不可变性。
 
 
 
+方法的参数传递机制
+
+①形参是基本数据类型
+
+	传递数据值
+
+②实参是引用数据类型
+
+	传递地址值
+	
+	特殊的类型：String、包装类等对象不可变性
 
 
 
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/Java%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98/%E6%96%B9%E6%B3%95%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6.jpg)
 
 
 
+>在类中，存在两个方法，变量在虚拟机栈是按方法分布。
+>
+>-----------------------------------------------------------------------------------
+>
+>声明的两次局部变量分别存放在不同的地址。
+>
+>j+=1; 调用方法时，穿过来基础类型的实参为1，自增 j=2 ，改变的是 j自己的局部变量和i无关。
+>
+>s+= "world"; 传过来的引用类型实参为Str的地址，操作字符串拼接，会重新开辟一块空间，存放helloworld ,然后s指针指向helloworld 的地址。
+>
+>n += 1; 和String原理形同，传过来的是地址，n指向了num地址，自增后 n指针指向了自增后的值得地址。
+>
+>a[0] += 1;同样形参实参传过来的是地址，但是这次操作的是数组中的元素，地址没有变，所以主方法的局部变量可以读到改变后的元素的的值。
+>
+>m.a += 1 同上。
+
+## 5. 上台阶的走法
+
+编程题：有n步台阶，一次只能上1步或2步，共有多少种走法？
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/Java%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98/%E9%80%92%E5%BD%92%E6%96%B9%E5%BC%8F.jpg)
+
+```java
+public class TestStep{
+	@Test
+	public void test(){
+		long start = System.currentTimeMillis();
+		System.out.println(f(100));//165580141
+		long end = System.currentTimeMillis();
+		System.out.println(end-start);//586ms
+	}
+	
+	//实现f(n)：求n步台阶，一共有几种走法
+	public int f(int n){
+		if(n<1){
+			throw new IllegalArgumentException(n + "不能小于1");
+		}
+		if(n==1 || n==2){
+			return n;
+		}
+		return f(n-2) + f(n-1);
+	}
+}
+```
+
+递归
+
+* 优点：大问题转化为小问题，可以减少代码量，同时代码精简，可读性好；
+
+* 缺点：递归调用浪费了空间，而且递归太深容易造成堆栈的溢出。
 
 
 
+## 6. Spring Bean的作用域的区别
 
+```xml
+	<bean id="book" class="com.atguigu.spring.beans.Book" scope="prototype">
+	 	<property name="id" value="8"></property>
+	</bean>
+```
+
+可以通过 Spring配置文件的 <bean> 的 scop属性配置。
+
+* singleton：默认值。当IOC容器一创建就会创建bean的实例，而且是单例的，每次得到的都是同
+* prototype：原型的。当IOC容器一创建不再实例化该bean，每次调用getBean方法时再实例化该bean，而且每调用一次创建一个对象
+* request：每次请求实例化一个bean
+* session：在一次会话中共享一个bean
+
+```java
+class SpringTest {
+
+	//01.Spring Bean的作用域之间有什么区别
+
+	//创建IOC容器对象
+	ApplicationContext ioc = new ClassPathXmlApplicationContext("beans.xml");
+	
+	@Test
+	void testBook() {
+		Book book = (Book) ioc.getBean("book");
+		Book book2 = (Book) ioc.getBean("book");
+		System.out.println(book==book2);
+	}
+}
+```
+
+## 7. Spring 常用的事务传播属性和隔离级别
+
+传播属性：
+
+![](https://readingnotes.oss-cn-beijing.aliyuncs.com/Java%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98/%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA.png)
+
+Spring 事务的传播行为 有以上几种，常用的就是 Required、newRequired。
+
+Spring 默认使用 Required。
+
+事务传播属性可以在@Transactional注解的propagation属性中定义。
+
+
+
+例子：function A里调用了 function B ,两个方法都标注了@Transactional,开启了默认事务，因为事务的传播行为，方法B使用的是方法A的传播属性，此时 B方法中的操作必须同时成功，否则会回滚；如果方法B定义了 newRequired 传播属性，在方法B被调用时开启了新的事务，只要保证单次调用方法B中所有操作都成功，则可以提交数据库，因为事务的隔离性，可以不用管其他次调用是否成功。
+
+
+
+隔离级别：
+
+1)        **读未提交**：READ UNCOMMITTED
+
+允许Transaction01读取Transaction02未提交的修改。
+
+2)        **读已提交**：READ COMMITTED
+
+            要求Transaction01只能读取Transaction02已提交的修改。
+
+3)        **可重复读**：REPEATABLE READ
+
+            确保Transaction01可以多次从一个字段中读取到相同的值，即Transaction01执行期间禁止其它事务对这个字段进行更新。
+
+4)        **串行化**：SERIALIZABLE
+
+​            确保Transaction01可以多次从一个表中读取到相同的行，在Transaction01执行期间，禁止其它事务对这个表进行添加、更新、删除操作。可以避免任何并发问题，但性能十分低下。
+
+
+
+ 各个隔离级别解决并发问题的能力见下表
+
+|                  | 脏读 | 不可重复读 | 幻读 |
+| ---------------- | ---- | ---------- | ---- |
+| READ UNCOMMITTED | 有   | 有         | 有   |
+| READ COMMITTED   | 无   | 有         | 有   |
+| REPEATABLE READ  | 无   | 无         | 有   |
+| SERIALIZABLE     | 无   | 无         | 无   |
+
+
+
+通过注解的方式设置事务的传播属性和隔离级别。
+
+```java
+@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED)
+```
+
+## 8.SpringMVC如何解决Post请求的中文乱码问题？
+
+解决Post请求乱码：
+
+​	在web.xml文件中配置过CharacterEncodingFilter滤器，并设置 过滤器参数：param-name、param-value
+
+​	配置 filter-mapping，设置过滤的路径。
+
+
+
+```xml
+<filter>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+        <param-name>encoding</param-name>
+        <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+        <param-name>forceEncoding</param-name>
+        <param-value>true</param-value>
+    </init-param>
+</filter>
+<filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+
+
+解决get请求乱码：
+
+​	在service.xml 文件中 的 connector 配置 URIEncodoing = 'UTF-8'属性。
