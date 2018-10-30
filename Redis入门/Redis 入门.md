@@ -1,10 +1,12 @@
 # Redis 入门
 
+[TOC]
+
 ##  1. NoSQL入门概述
 
 ### 1.1 概述
 
-NoSQL = Not Only SQL 泛指菲关系型数据库。
+NoSQL = Not Only SQL 泛指非关系型数据库。
 
 这些类型的数据存储不需要固定的模式，无需多余的操作就可以横向扩展。
 

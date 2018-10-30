@@ -356,7 +356,7 @@ Spring 默认使用 Required。
 
 4)        **串行化**：SERIALIZABLE
 
-​            确保Transaction01可以多次从一个表中读取到相同的行，在Transaction01执行期间，禁止其它事务对这个表进行添加、更新、删除操作。可以避免任何并发问题，但性能十分低下。
+            确保Transaction01可以多次从一个表中读取到相同的行，在Transaction01执行期间，禁止其它事务对这个表进行添加、更新、删除操作。可以避免任何并发问题，但性能十分低下。
 
 
 
@@ -381,9 +381,9 @@ Spring 默认使用 Required。
 
 解决Post请求乱码：
 
-​	在web.xml文件中配置过CharacterEncodingFilter滤器，并设置 过滤器参数：param-name、param-value
+	在web.xml文件中配置过CharacterEncodingFilter滤器，并设置 过滤器参数：param-name、param-value
 
-​	配置 filter-mapping，设置过滤的路径。
+	配置 filter-mapping，设置过滤的路径。
 
 
 
@@ -410,7 +410,7 @@ Spring 默认使用 Required。
 
 解决get请求乱码：
 
-​	在service.xml 文件中 的 connector 配置 URIEncodoing = 'UTF-8'属性。
+	在service.xml 文件中 的 connector 配置 URIEncodoing = 'UTF-8'属性。
 
 ## 9.MyBatis中实体名和数据库字段名一致
 
@@ -453,6 +453,10 @@ Spring 默认使用 Required。
 |   Zset   | 以某一个条件为权重，进行排序。   京东：商品详情的时候，都会有一个综合排名，还可以按照价格进行排名。 |
 
    
+
+## 12.HashMap的底层实现
+
+Map是一个接口，主要有 HashMap、LinkedHashMap、TreeMap、HashTable
 
 
 
