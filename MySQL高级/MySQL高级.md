@@ -666,7 +666,7 @@ show profile cpu,block io for query 10;
 
 
 
-session1 给 table1 加了表锁的读锁，session1 可以读table1，不能跟新table1，不能读别的表。session2 可以读table1 阻塞，不能跟新table1。
+session1 给 table1 加了表锁的读锁，session1 可以读table1，不能更新table1，不能读别的表。session2 可以读table1 阻塞，不能更新table1。
 
 session1 给 table1加了表锁的写锁，session1可以读,写table1，不能读别的表；session2 读table1 阻塞。
 

@@ -1,6 +1,6 @@
 # Redis 入门
 
-[TOC]
+
 
 ##  1. NoSQL入门概述
 
@@ -283,7 +283,7 @@ Aof 保存的是 appendonly.aof 文件
    * 不同步：appendfsync no 从不同步
 2. 劣势
    * 相同数据集数据aof文件远远大于rdb文件，恢复慢于rdb。
-   * aof运行效率鳗鱼rdb，每秒同步策略较好，不同步效率和rdb相同。
+   * aof运行效率慢于rdb，每秒同步策略较好，不同步效率和rdb相同。
 
 #### 4.2.5 总结
 
