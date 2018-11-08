@@ -1150,6 +1150,107 @@ public class TestScheduledThreadPool {
 }
 ```
 
+### 11.1 ThreadPoolExecutor构造器
+
+ThreadPoolExecutor有以下四个构造方法
+
+* ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue)
+* ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler)
+* ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory)
+* ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler)
+
+
+1. corePoolSize（线程池的基本大小）:当提交一个任务到线程池时，线程池会创建一个线程来执行任务，即使其他空闲的基本线程能够执行新任务也会创建线程，等到需要执行的任务数大于线程池基本大小时就不再创建。如果调用了prestartAllCoreThreads()方法，线程池会提前创建并启动所有基本线程。
+
+2. maximumPoolSize（线程池最大数量）：线程池允许创建的最大线程数。如果队列满了，并且已创建的线程数小于最大线程数，则线程池会再创建新的线程执行任务。值得注意的是，如果使用了无界的任务队列这个参数就没用了。
+
+3. keepAliveTime(线程活动时间):线程池的工作线程空闲后，保持存活的时间。所以如果任务很多，并且每个任务执行的时间比较短，可以调大时间，提高线程利用率。
+
+4. TimeUnit(线程活动时间的单位)：可选的单位有天（Days）、小时（HOURS）、分钟（MINUTES）、毫秒（MILLISECONDS）、微秒（MICROSECONDS，千分之一毫秒）和纳秒（NANOSECONDS，千分之一微秒）。
+
+5. workQueue(任务队列) : 用于保存等待执行的任务的阻塞队列。可以选择以下几个阻塞队列：
+
+   * ArrayBlockingQueue:是一个基于数组结构的有界阻塞队列，按FIFO原则进行排序
+
+   * LinkedBlockingQueue:一个基于链表结构的阻塞队列，吞吐量高于ArrayBlockingQueue。静态工厂方法
+
+     Excutors.newFixedThreadPool()使用了这个队列
+
+   * SynchronousQueue: 一个不存储元素的阻塞队列。每个插入操作必须等到另一个线程调用移除操作，否则插入操作一直处于阻塞状态，吞吐量高于LinkedBlockingQueue，静态工厂方法Excutors.newCachedThreadPool()使用了这个队列
+
+   * PriorityBlockingQueue:一个具有优先级的无限阻塞队列。
+
+6. threadFactory（线程工厂）：可以通过线程工厂为每个创建出来的线程设置更有意义的名字，如开源框架guava
+
+7.  RejectedExecutionHandler （饱和策略）：当队列和线程池都满了，说明线程池处于饱和状态，那么必须采取一种策略还处理新提交的任务。它可以有如下四个选项：
+
+   * AbortPolicy:直接抛出异常，默认情况下采用这种策略
+   * CallerRunsPolicy:只用调用者所在线程来运行任务
+   * DiscardOldestPolicy:丢弃队列里最近的一个任务，并执行当前任务
+   * DiscardPolicy:不处理，丢弃掉
+
+
+
+```java
+package com.mangoee.mangoblog;
+
+import org.junit.Test;
+
+import java.util.concurrent.*;
+
+
+public class TestThreadPoolExecutor {
+
+    static BlockingQueue blockingQueue=new ArrayBlockingQueue<>(10);
+    @Test
+    public void testThreadPoolExecutor() {
+
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(5 ,10 ,60 ,TimeUnit.SECONDS,blockingQueue);
+
+        for (int i = 0; i < 20 ; i++) {
+            Runnable runnable = new ThredPoolDemo(20000,i);
+            threadPoolExecutor.submit(runnable);
+        }
+    }
+
+    class ThredPoolDemo implements Runnable{
+
+        private int sleepTime = 0;
+
+        private int i;
+
+        public ThredPoolDemo(int sleepTime, int i) {
+            this.sleepTime = sleepTime;
+            this.i = i;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("线程："+ Thread.currentThread().getName() + "开始运行！"+"当前数："+i);
+            try{
+                Thread.sleep(sleepTime);
+            }catch (InterruptedException e){
+                System.out.println("线程："+ Thread.currentThread().getName() + "被中断！");
+            }finally {
+                System.out.println("线程："+ Thread.currentThread().getName() + "结束！");
+            }
+
+
+        }
+    }
+
+}
+
+```
+
+
+
+
+
+
+
+
+
 
 
 ## 12. Fork/Join 框架与线程池的区别 
@@ -1273,9 +1374,13 @@ class ForkJoinSumCalculate extends RecursiveTask<Long>{
 
 ```
 
+## 13. 线程的5种状态
 
-
-
+1. 新建状态：当用new新建一个线程时，此时程序还没有开始运行线程中的代码。
+2. 就绪状态：执行线程要调用线程的 start()方法，此时即启动了线程。
+3. 运行状态：当线程获得CPU时间后，它才进入运行状态，真正开始执行run方法。
+4. 阻塞状态：正在运行的线程没有结束，暂时让出CPU资源，让其他处于就绪状态的线程获得CPU时间。
+5. 死亡状态：线程被销毁。
 
 
 
