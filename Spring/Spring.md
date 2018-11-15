@@ -74,9 +74,9 @@ public String setName() {  //set 后面的值才叫做属性
 
 ```java
 //1.创建IOC容器对象
-ApplicationContext iocContainer = new ClassPathXmlApplicationContext("helloworld.xml");
+ApplicationContext cxt = new ClassPathXmlApplicationContext("helloworld.xml");
 //2.根据id值获取bean实例对象
-Student Student = (Student) iocContainer.getBean("student");
+Student Student = (Student) cxt.getBean("student");
 
 Student Student = cxt.getBean(Student. class);
 
@@ -339,7 +339,7 @@ jdbc.password=1234
 		 byName: 使用bean的属性名与IOC容器中<bean>的id值进行匹配. 匹配成功则装配成功. 
 		 
 		 byType: 使用bean的属性的类型与IOC容器中<bean>的class进行匹配。 如果唯一匹配则装配成功
-		                     如果匹配到多个兼容类型的bean。则跑出异常。
+		                     如果匹配到多个兼容类型的bean。则抛出异常。
 	-->
 	<bean id="person" class="com.atguigu.spring.autowire.Person" autowire="byType">
 		<property name="name" value="Tom"></property>	
