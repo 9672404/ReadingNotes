@@ -14,6 +14,10 @@ docker run -p 3306:3306 --name mysqlcloud -e MYSQL_ROOT_PASSWORD=root -d  mysql:
 
 ## rabbitMQ
 docker exec -it myrabbitmq /bin/bash  #启动; myrabbitmq 为docker 里 mq的名称
+/usr/lib/rabbitmq/bin/rabbitmqctl     #docker 客户端的管理工具所在路径
+./rabbitmqctl list_users              # 查看所有用户
+./rabbitmqctl status                  # 查看状态
+
 
 ```
 
