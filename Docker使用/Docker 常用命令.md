@@ -13,7 +13,7 @@ docker run -p 3306:3306 --name mysqlcloud -e MYSQL_ROOT_PASSWORD=root -d  mysql:
 #运行一个Mysql镜像
 
 ## rabbitMQ
-docker exec -it myrabbitmq /bin/bash  启动; myrabbitmq 为docker 里 mq的名称
+docker exec -it myrabbitmq /bin/bash  #启动; myrabbitmq 为docker 里 mq的名称
 
 ```
 
