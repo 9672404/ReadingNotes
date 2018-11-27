@@ -18,6 +18,6 @@ docker exec -it myrabbitmq /bin/bash  #启动; myrabbitmq 为docker 里 mq的名
 ./rabbitmqctl list_users              # 查看所有用户
 ./rabbitmqctl status                  # 查看状态
 
-
+http://59.110.214.126:15673/#/
 ```
 
