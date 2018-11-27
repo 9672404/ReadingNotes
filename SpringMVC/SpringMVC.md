@@ -463,7 +463,7 @@ return "success";
 
 ### 6.1 重定向
 
-①   般情况下，控制器方法返回字符串类型的值会被当成逻辑视图名处理
+一般 般情况下，控制器方法返回字符串类型的值会被当成逻辑视图名处理
 
 如果返回的字符串中带 forward: 或redirect: 前缀时，SpringMVC会对他们进行特殊处理：将 forward: 和 redirect: 当成指示符，其后的字符串作为URL 来处理
 
@@ -676,7 +676,6 @@ public class MyFirstInterceptor implements HandlerInterceptor {
 			throws Exception {
 		System.out.println("MyFirstInterceptor afterCompletion");
 	}
-
 }
 ```
 
@@ -708,7 +707,9 @@ public class MyFirstInterceptor implements HandlerInterceptor {
 
    多个拦截器的方法执行顺序：preHandle 正序迭代，所以按照配置顺序，先配置先执行；
 
-   						  postHandle 和 afterCompletion 倒序迭代，先配置后执行。
+   ```markdown
+   					  postHandle 和 afterCompletion 倒序迭代，先配置后执行。
+   ```
 
 
 
@@ -724,16 +725,16 @@ public class MyFirstInterceptor implements HandlerInterceptor {
 >
 > 判断请求URI对应的映射
 >
-> 	①     不存在：
->
+> 	    不存在：
+>		
 > 		l  再判断是否配置了mvc:default-servlet-handler：
->
+>		
 > 		l  如果没配置，则控制台报映射查找不到，客户端展示404错误
->
+>		
 > 		l  如果有配置，则执行目标资源（一般为静态资源，如：JS,CSS,HTML）
->
-> 	②     存在：
->
+>		
+> 	    存在：
+>		
 > 		l  执行下面流程
 >
 > 3）    根据该URI，调用HandlerMapping获得该Handler配置的所有相关的对象（包括Handler对象以及Handler对象对应的拦截器），最后以HandlerExecutionChain对象的形式返回；
@@ -772,7 +773,7 @@ public class MyFirstInterceptor implements HandlerInterceptor {
 
 * WEB 环境:        我们希望SpringIOC容器在WEB应用服务器启动时就被创建.
 
-​                               通过监听器来监听ServletContext对象的创建, 监听到ServletContext对象被创建，就创建SpringIOC容器。 并且将容器对象绑定到ServletContext中， 让所有的web组件能共享到IOC容器对象。
+                               通过监听器来监听ServletContext对象的创建, 监听到ServletContext对象被创建，就创建SpringIOC容器。 并且将容器对象绑定到ServletContext中， 让所有的web组件能共享到IOC容器对象。
 
 
 
@@ -910,7 +911,7 @@ public String  hello(HttpSession session ) {
 
 重点是使用HttpSession 获取当前的 ServletContext。
 
-Spring是吧  IOC容器绑定到ServletContext中，通过getAttribute 获取，否则两个容器之间不能通信。
+Spring是把  IOC容器绑定到ServletContext中，通过getAttribute 获取，否则两个容器之间不能通信。
 
 
 

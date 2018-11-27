@@ -54,7 +54,7 @@ public String setName() {  //set 后面的值才叫做属性
 		 		   Object obj = cls.newInstance();   必须提供无参数构造器. 
 		 <property>: 给对象的属性赋值
 		  	name: 指定属性名  , 指定set风格的属性名. 
-		  	value:指定属性值 	
+		  	value:指定属性值 
 	-->
 	<bean id="person"  class="com.atguigu.spring.helloWorld.Person">
 		<property name="name2" value="HanMeiMei"></property>
@@ -753,9 +753,6 @@ public class Main {
 		                                               可以省略不进行指定。 
 	-->
 	<tx:annotation-driven transaction-manager="dataSourceTransactionManager"/>
-	
-	
-	
 ```
 
 

@@ -66,7 +66,6 @@ public class TestAtomicDemo {
 			new Thread(ad).start();
 		}
 	}
-	
 }
 
 class AtomicDemo implements Runnable{
@@ -866,7 +865,7 @@ class AlternateDemo{
 
 ## 9. ReadWriteLock 读写锁 
 
-ReadWriteLock 为读写锁，回一个接口。
+ReadWriteLock 为读写锁，为一个接口。
 
 > * ReadWriteLock 维护了一对相关的锁，一个用于只读操作，另一个用于写入操作。只要没有 writer，读取锁以由多个 reader 线程同时保持。写入锁是独占的。。
 >
@@ -1039,7 +1038,7 @@ class Number{
 >      * |--ScheduledExecutorService 子接口：负责线程的调度
 >          * |--ScheduledThreadPoolExecutor ：继承 ThreadPoolExecutor， 实现 ScheduledExecutorService
 >
->     三、工具类 : Executors
+>     三、工具类 : Executors 
 >  * ExecutorService newFixedThreadPool() : 创建固定大小的线程池
 >  * ExecutorService newCachedThreadPool() : 缓存线程池，线程池的数量不固定，可以根据需求自动的更改数量。
 >  * ExecutorService newSingleThreadExecutor() : 创建单个线程池。线程池中只有一个线程

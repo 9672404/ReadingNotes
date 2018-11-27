@@ -278,7 +278,7 @@ Aof 保存的是 appendonly.aof 文件
 #### 4.2.4 优势
 
 1. 优势 可以灵活的配置同步规则
-   * 每秒同步：appendfsync always 同步持久化，每次发生数据变更就会立即记录到磁盘，性能较差但数据完整性较好。
+   * 每次同步：appendfsync always 同步持久化，每次发生数据变更就会立即记录到磁盘，性能较差但数据完整性较好。
    * 每秒同步：appendfsync everysec 异步操作 每秒记录 如果一秒内宕机  有数据丢失
    * 不同步：appendfsync no 从不同步
 2. 劣势
